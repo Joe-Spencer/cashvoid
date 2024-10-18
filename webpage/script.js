@@ -1,4 +1,3 @@
-// scripts.js
 const canvas = document.getElementById('hypercubeCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth * 0.8;
