@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #111;
+    background-color: #000;
     padding: 20px;
 }
 
@@ -34,13 +34,13 @@ main {
 }
 
 canvas {
-    background-color: #111;
+    background-color: #000;
     display: block;
     margin: 0 auto;
 }
 
 footer {
-    background-color: #111;
+    background-color: #000;
     padding: 10px;
     position: fixed;
     width: 100%;
