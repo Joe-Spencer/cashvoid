@@ -1,88 +1,183 @@
-const canvas = document.getElementById('hypercubeCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth * 0.8;
-canvas.height = window.innerHeight * 0.6;
+document.addEventListener('DOMContentLoaded', () => {
 
-function createHypercube() {
-    const vertices = [];
-    for (let i = 0; i < 16; i++) {
-        vertices.push([
-            (i & 1) ? 1 : -1,
-            (i & 2) ? 1 : -1,
-            (i & 4) ? 1 : -1,
-            (i & 8) ? 1 : -1
-        ]);
-    }
-    return vertices;
-}
+    function validateAccessCode() {
+        const accessCode = document.getElementById('access-code').value;
+        const validCodes = ['1234', '5678']; // Example valid codes
 
-function connectEdges(vertices) {
-    const edges = [];
-    for (let i = 0; i < vertices.length; i++) {
-        for (let j = i + 1; j < vertices.length; j++) {
-            if (vertices[i].reduce((acc, val, idx) => acc + (val !== vertices[j][idx]), 0) === 1) {
-                edges.push([i, j]);
-            }
+        if (validCodes.includes(accessCode)) {
+            window.location.href = 'chatvoid.html';
+        } else {
+            alert('Invalid access code');
         }
     }
-    return edges;
-}
 
-function rotationMatrix4D(theta, axis1, axis2) {
-    const rm = Array.from({ length: 4 }, () => Array(4).fill(0));
-    for (let i = 0; i < 4; i++) rm[i][i] = 1;
-    const c = Math.cos(theta);
-    const s = Math.sin(theta);
-    rm[axis1][axis1] = c;
-    rm[axis1][axis2] = -s;
-    rm[axis2][axis1] = s;
-    rm[axis2][axis2] = c;
-    return rm;
-}
+    // Make the function available globally
+    window.validateAccessCode = validateAccessCode;
+    async function sendMessage() {
+        const userInput = document.getElementById('user-input').value;
+        if (!userInput) return;
 
-function projectTo3D(vertices4D, distance = 5) {
-    return vertices4D.map(v => {
-        const w = distance / (distance - v[3]);
-        return [v[0] * w, v[1] * w, v[2] * w];
+        // Display user input in chat window
+        const chatWindow = document.getElementById('chat-window');
+        const userMessage = document.createElement('div');
+        userMessage.textContent = `You: ${userInput}`;
+        chatWindow.appendChild(userMessage);
+
+        // Clear the input field
+        document.getElementById('user-input').value = '';
+
+        // Fetch response from OpenAI's API
+        try {
+            const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer YOUR_OPENAI_API_KEY`
+                },
+                body: JSON.stringify({
+                    prompt: userInput,
+                    max_tokens: 150
+                })
+            });
+
+            const data = await response.json();
+            const botMessage = document.createElement('div');
+            botMessage.textContent = `Bot: ${data.choices[0].text.trim()}`;
+            chatWindow.appendChild(botMessage);
+
+            // Scroll to the bottom of the chat window
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        } catch (error) {
+            console.error('Error fetching response from OpenAI:', error);
+        }
+    }
+
+    // Add event listener to input field for Enter key
+    document.getElementById('user-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
     });
-}
 
-function drawHypercube(vertices, edges) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const projected = projectTo3D(vertices);
-    const scale = 100;
-    const offsetX = canvas.width / 2;
-    const offsetY = canvas.height / 2;
+    // Make the function available globally
+    window.sendMessage = sendMessage;
 
-    edges.forEach(([i, j]) => {
-        const [x1, y1] = projected[i];
-        const [x2, y2] = projected[j];
-        ctx.beginPath();
-        ctx.moveTo(x1 * scale + offsetX, y1 * scale + offsetY);
-        ctx.lineTo(x2 * scale + offsetX, y2 * scale + offsetY);
-        ctx.strokeStyle = '#e50914';
-        ctx.stroke();
-    });
-}
+    function drawTesseract() {
+        // Get the canvas and context
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
 
-const vertices = createHypercube();
-const edges = connectEdges(vertices);
-let angle = 0;
+        // Define the vertices of a tesseract in 4D space
+        const points = [
+            [-1, -1, -1, -1],
+            [-1, -1, -1,  1],
+            [-1, -1,  1, -1],
+            [-1, -1,  1,  1],
+            [-1,  1, -1, -1],
+            [-1,  1, -1,  1],
+            [-1,  1,  1, -1],
+            [-1,  1,  1,  1],
+            [ 1, -1, -1, -1],
+            [ 1, -1, -1,  1],
+            [ 1, -1,  1, -1],
+            [ 1, -1,  1,  1],
+            [ 1,  1, -1, -1],
+            [ 1,  1, -1,  1],
+            [ 1,  1,  1, -1],
+            [ 1,  1,  1,  1],
+        ];
 
-function animate() {
-    const rm = rotationMatrix4D(angle, 0, 1);
-    const rotatedVertices = vertices.map(v => {
-        const nv = [0, 0, 0, 0];
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                nv[i] += v[j] * rm[j][i];
+        // Define edges connecting the vertices
+        const edges = [];
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                let diff = 0;
+                for (let k = 0; k < 4; k++) {
+                    if (points[i][k] !== points[j][k]) diff++;
+                }
+                if (diff === 1) {
+                    edges.push([i, j]);
+                }
             }
         }
-        return nv;
-    });
-    drawHypercube(rotatedVertices, edges);
-    angle += 0.01;
-    requestAnimationFrame(animate);
-}
 
-animate();
+        // Rotation angles for the different planes
+        let angle = 0;
+
+        function rotate4D(point) {
+            const cosA = Math.cos(angle);
+            const sinA = Math.sin(angle);
+            let x = point[0];
+            let y = point[1];
+            let z = point[2];
+            let w = point[3];
+
+            // Rotation in XZ plane
+            let x2 = x * cosA - z * sinA;
+            let z2 = x * sinA + z * cosA;
+
+            // Rotation in XW plane
+            let x3 = x2 * cosA - w * sinA;
+            let w2 = x2 * sinA + w * cosA;
+
+            // Rotation in YZ plane
+            let y2 = y * cosA - z2 * sinA;
+            let z3 = y * sinA + z2 * cosA;
+
+            // Rotation in YW plane
+            let y3 = y2 * cosA - w2 * sinA;
+            let w3 = y2 * sinA + w2 * cosA;
+
+            // Rotation in ZW plane
+            let z4 = z3 * cosA - w3 * sinA;
+            let w4 = z3 * sinA + w3 * cosA;
+
+            return [x3, y3, z4, w4];
+        }
+
+        function project(point4D) {
+            // Project from 4D to 3D
+            const distance = 2;
+            const w = 1 / (distance - point4D[3]);
+            const x = point4D[0] * w;
+            const y = point4D[1] * w;
+            const z = point4D[2] * w;
+            return [x, y, z];
+        }
+
+        function draw() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Rotate and project points
+            const transformed_points = [];
+            for (let i = 0; i < points.length; i++) {
+                const rotated = rotate4D(points[i]);
+                const projected = project(rotated);
+                transformed_points.push(projected);
+            }
+
+            // Draw edges
+            ctx.strokeStyle = '#ffffff';
+            for (let i = 0; i < edges.length; i++) {
+                const p1 = transformed_points[edges[i][0]];
+                const p2 = transformed_points[edges[i][1]];
+                ctx.beginPath();
+                ctx.moveTo(p1[0] * 200 + canvas.width / 2, p1[1] * 200 + canvas.height / 2);
+                ctx.lineTo(p2[0] * 200 + canvas.width / 2, p2[1] * 200 + canvas.height / 2);
+                ctx.stroke();
+            }
+        }
+
+        function animate() {
+            angle += 0.01;
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
+
+    // Call the function to draw the tesseract
+    drawTesseract();
+});

@@ -9,146 +9,155 @@
 
 <body>
     <header>
-        <h1 class="logo">CASHVOID</h1>
+            <h1 class="logo">CASHVOID</h1>
     </header>
     <main>
-        <section class="description">
-            <h2>Welcome to Cashvoid</h2>
-            <p>cashvoid.com is an art project created by Joseph Spencer.</p>
+        <!-- Directory Section -->
+        <section class="directory">
+            <ul>
+                <li><a href="home.html">HOME</a></li>
+                <li><a href="access.html">CHATVOID</a></li>
+                <li><a href="aboutus.html">ABOUT</a></li>
+                <li><a href="images.html">AI_SLOP</a></li>
+                <!-- Add more links as needed -->
+            </ul>
         </section>
-    </main>
-    <canvas id="canvas" width="600" height="600"></canvas>
-    <script>
-        // Get the canvas and context
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        <section class="description">
+            <p>Welcome to Cashvoid, an art project created by Joseph Spencer.</p>
+        </section>
+        <button class="styled-button" onclick="window.location.href='access.html'">Chatvoid</button>
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <script>
+            // Get the canvas and context
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
 
-        // Define the vertices of a tesseract in 4D space
-        const points = [
-            [-1, -1, -1, -1],
-            [-1, -1, -1,  1],
-            [-1, -1,  1, -1],
-            [-1, -1,  1,  1],
-            [-1,  1, -1, -1],
-            [-1,  1, -1,  1],
-            [-1,  1,  1, -1],
-            [-1,  1,  1,  1],
-            [ 1, -1, -1, -1],
-            [ 1, -1, -1,  1],
-            [ 1, -1,  1, -1],
-            [ 1, -1,  1,  1],
-            [ 1,  1, -1, -1],
-            [ 1,  1, -1,  1],
-            [ 1,  1,  1, -1],
-            [ 1,  1,  1,  1],
-        ];
+            // Define the vertices of a tesseract in 4D space
+            const points = [
+                [-1, -1, -1, -1],
+                [-1, -1, -1,  1],
+                [-1, -1,  1, -1],
+                [-1, -1,  1,  1],
+                [-1,  1, -1, -1],
+                [-1,  1, -1,  1],
+                [-1,  1,  1, -1],
+                [-1,  1,  1,  1],
+                [ 1, -1, -1, -1],
+                [ 1, -1, -1,  1],
+                [ 1, -1,  1, -1],
+                [ 1, -1,  1,  1],
+                [ 1,  1, -1, -1],
+                [ 1,  1, -1,  1],
+                [ 1,  1,  1, -1],
+                [ 1,  1,  1,  1],
+            ];
 
-        // Define edges connecting the vertices
-        const edges = [];
-        for (let i = 0; i < points.length; i++) {
-            for (let j = i + 1; j < points.length; j++) {
-                let diff = 0;
-                for (let k = 0; k < 4; k++) {
-                    if (points[i][k] !== points[j][k]) diff++;
-                }
-                if (diff === 1) {
-                    edges.push([i, j]);
-                }
-            }
-        }
-
-        // Rotation angles for the different planes
-        let angle = 0;
-
-        function project(point4D) {
-            // Project from 4D to 3D
-            const w = 2; // Distance from the viewer to the 4D object
-            const scale4D = 1 / (w - point4D[3]);
-
-            const x3D = point4D[0] * scale4D;
-            const y3D = point4D[1] * scale4D;
-            const z3D = point4D[2] * scale4D;
-
-            // Project from 3D to 2D
-            const viewer_distance = 5; // Distance from the viewer to the 3D object
-            const scale3D = 1 / (viewer_distance - z3D);
-
-            const x2D = x3D * scale3D * canvas.width / 2;
-            const y2D = y3D * scale3D * canvas.height / 2;
-
-            return [x2D, y2D];
-        }
-
-        function rotate4D(point) {
-            const sinA = Math.sin(angle);
-            const cosA = Math.cos(angle);
-
-            // Rotation in XY plane
-            let x = point[0] * cosA - point[1] * sinA;
-            let y = point[0] * sinA + point[1] * cosA;
-            let z = point[2];
-            let w = point[3];
-
-            // Rotation in XZ plane
-            let x2 = x * cosA - z * sinA;
-            let z2 = x * sinA + z * cosA;
-
-            // Rotation in XW plane
-            let x3 = x2 * cosA - w * sinA;
-            let w2 = x2 * sinA + w * cosA;
-
-            // Rotation in YZ plane
-            let y2 = y * cosA - z2 * sinA;
-            let z3 = y * sinA + z2 * cosA;
-
-            // Rotation in YW plane
-            let y3 = y2 * cosA - w2 * sinA;
-            let w3 = y2 * sinA + w2 * cosA;
-
-            // Rotation in ZW plane
-            let z4 = z3 * cosA - w3 * sinA;
-            let w4 = z3 * sinA + w3 * cosA;
-
-            return [x3, y3, z4, w4];
-        }
-
-        function draw() {
-            // Clear the canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Rotate and project points
-            const transformed_points = [];
+            // Define edges connecting the vertices
+            const edges = [];
             for (let i = 0; i < points.length; i++) {
-                const rotated = rotate4D(points[i]);
-                const projected = project(rotated);
-                transformed_points.push(projected);
+                for (let j = i + 1; j < points.length; j++) {
+                    let diff = 0;
+                    for (let k = 0; k < 4; k++) {
+                        if (points[i][k] !== points[j][k]) diff++;
+                    }
+                    if (diff === 1) {
+                        edges.push([i, j]);
+                    }
+                }
             }
 
-            // Draw edges
-            ctx.strokeStyle = '#ffffff';
-            for (let i = 0; i < edges.length; i++) {
-                const p1 = transformed_points[edges[i][0]];
-                const p2 = transformed_points[edges[i][1]];
+            // Rotation angles for the different planes
+            let angle = 0;
 
-                ctx.beginPath();
-                ctx.moveTo(p1[0] + canvas.width / 2, p1[1] + canvas.height / 2);
-                ctx.lineTo(p2[0] + canvas.width / 2, p2[1] + canvas.height / 2);
-                ctx.stroke();
+            function project(point4D) {
+                // Project from 4D to 3D
+                const w = 2; // Distance from the viewer to the 4D object
+                const scale4D = 1 / (w - point4D[3]);
+
+                const x3D = point4D[0] * scale4D;
+                const y3D = point4D[1] * scale4D;
+                const z3D = point4D[2] * scale4D;
+
+                // Project from 3D to 2D
+                const viewer_distance = 5; // Distance from the viewer to the 3D object
+                const scale3D = 1 / (viewer_distance - z3D);
+
+                const x2D = x3D * scale3D * canvas.width / 2;
+                const y2D = y3D * scale3D * canvas.height / 2;
+
+                return [x2D, y2D];
             }
 
-            // Update angle for rotation
-            angle += 0.01;
+            function rotate4D(point) {
+                const sinA = Math.sin(angle);
+                const cosA = Math.cos(angle);
 
-            requestAnimationFrame(draw);
-        }
+                // Rotation in XY plane
+                let x = point[0] * cosA - point[1] * sinA;
+                let y = point[0] * sinA + point[1] * cosA;
+                let z = point[2];
+                let w = point[3];
 
-        // Start the animation
-        draw();
-    </script>
+                // Rotation in XZ plane
+                let x2 = x * cosA - z * sinA;
+                let z2 = x * sinA + z * cosA;
+
+                // Rotation in XW plane
+                let x3 = x2 * cosA - w * sinA;
+                let w2 = x2 * sinA + w * cosA;
+
+                // Rotation in YZ plane
+                let y2 = y * cosA - z2 * sinA;
+                let z3 = y * sinA + z2 * cosA;
+
+                // Rotation in YW plane
+                let y3 = y2 * cosA - w2 * sinA;
+                let w3 = y2 * sinA + w2 * cosA;
+
+                // Rotation in ZW plane
+                let z4 = z3 * cosA - w3 * sinA;
+                let w4 = z3 * sinA + w3 * cosA;
+
+                return [x3, y3, z4, w4];
+            }
+
+            function draw() {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Rotate and project points
+                const transformed_points = [];
+                for (let i = 0; i < points.length; i++) {
+                    const rotated = rotate4D(points[i]);
+                    const projected = project(rotated);
+                    transformed_points.push(projected);
+                }
+
+                // Draw edges
+                ctx.strokeStyle = '#ffffff';
+                for (let i = 0; i < edges.length; i++) {
+                    const p1 = transformed_points[edges[i][0]];
+                    const p2 = transformed_points[edges[i][1]];
+
+                    ctx.beginPath();
+                    ctx.moveTo(p1[0] + canvas.width / 2, p1[1] + canvas.height / 2);
+                    ctx.lineTo(p2[0] + canvas.width / 2, p2[1] + canvas.height / 2);
+                    ctx.stroke();
+                }
+
+                // Update angle for rotation
+                angle += 0.01;
+
+                requestAnimationFrame(draw);
+            }
+
+            // Start the animation
+            draw();
+        </script>
+    </main>
     <footer>
-        <p>&copy; 2023 Cashvoid. All rights reserved.</p>
+        <p>&copy; 2024 Cashvoid. All rights reserved.</p>
     </footer>
     <script src="scripts.js"></script>
-
 </body>
 </html>
