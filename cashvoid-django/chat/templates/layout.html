@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <title>{% block title %}CASHVOID{% endblock %}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Crimson+Text:wght@400;600&family=Nosifer&family=Creepster&family=Eater&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body>
+    <header class="header">
+      <h1>CASHVOID</h1>
+      <nav class="nav">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'chat' %}">Chat</a>
+        {% comment %} <a href="{% url 'images' %}">Images</a> {% endcomment %}
+      </nav>
+    </header>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
