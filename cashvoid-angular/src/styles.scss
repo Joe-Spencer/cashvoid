@@ -1,0 +1,124 @@
+:root {
+  --primary-color: #e63946;
+  --text-color: #ffffff;
+  --bg-dark: #000000;
+  --border-color: #444;
+  --hover-bg: #ffffff;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Crimson+Text:wght@400;600&family=Nosifer&family=Creepster&family=Eater&display=swap');
+
+/* Base styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-color);
+  font-family: 'Crimson Text', 'Arial', sans-serif;
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* Headers */
+h1, h2, h3 {
+  color: var(--primary-color);
+  font-family: 'UnifrakturMaguntia', serif;
+  text-shadow: 2px 2px 4px #000;
+}
+
+/* Button styles */
+.styled-button {
+  background-color: var(--bg-dark);
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
+  padding: 10px 20px;
+  font-family: 'Gothic A1', sans-serif;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255,255,255,0.1),
+      transparent
+    );
+    transform: rotate(45deg);
+    transition: 0.5s;
+  }
+
+  &:hover::after {
+    left: 100%;
+  }
+}
+
+/* Animations */
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary-color),
+                 0 0 20px var(--primary-color), 0 0 25px var(--primary-color);
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--primary-color),
+                 0 0 40px var(--primary-color), 0 0 50px var(--primary-color);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply animations to elements */
+.container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.nav a {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+} 

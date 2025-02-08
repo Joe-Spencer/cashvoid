@@ -1,0 +1,62 @@
+.header {
+  background-color: var(--bg-dark);
+  color: var(--primary-color);
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  border-bottom: 1px solid var(--border-color);
+
+  h1 {
+    margin: 0;
+    font-size: 3em;
+    font-family: 'UnifrakturMaguntia', serif;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 4px #000;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  nav {
+    margin-top: 1rem;
+    
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      
+      li {
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+          border: 1px solid transparent;
+          
+          &:hover {
+            border-color: var(--primary-color);
+            background: rgba(230, 57, 70, 0.1);
+          }
+          
+          &.active {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary-color),
+                 0 0 20px var(--primary-color), 0 0 25px var(--primary-color);
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--primary-color),
+                 0 0 40px var(--primary-color), 0 0 50px var(--primary-color);
+  }
+} 

@@ -20,9 +20,6 @@ from chat.views import chat_view, home_view, about_view, images_view
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/home/', permanent=True)),
-    path('chat/', chat_view, name='chat'),
-    path('home/', home_view, name='home'),
-    path('about/', about_view, name='about'),
-    path('images/', images_view, name='images'),
+    path('admin/', admin.site.urls),
+    path('', include('chat.urls')),
 ]
