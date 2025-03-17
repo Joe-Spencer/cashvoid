@@ -156,7 +156,6 @@ cython_debug/
 
 # EC2 deployment files
 EC2-DEPLOYMENT-GUIDE.md
-deploy.sh
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
