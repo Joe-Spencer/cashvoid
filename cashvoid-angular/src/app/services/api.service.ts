@@ -6,19 +6,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8000';  // Django backend URL
+  // Dynamic API URL based on environment
+  private apiUrl = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000'  // Local development Express backend
+    : '';  // In production, use relative URL to same domain
 
   constructor(private http: HttpClient) { }
 
   sendMessage(message: string): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     });
 
-    const body = new URLSearchParams();
-    body.set('user_input', message);
-
-    return this.http.post(`${this.apiUrl}/chat/`, body.toString(), {
+    return this.http.post(`${this.apiUrl}/api/chat`, { message }, {
       headers,
       responseType: 'text'
     });
